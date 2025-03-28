@@ -15,5 +15,6 @@ scrape_configs:
           - localhost
         labels:
           job: system_logs
-          host: server
-          __path__: /var/log/*.log  # Capture all system logs
+          host: my-server
+    docker_sd_configs:
+      - host: unix:///var/run/docker.sock
