@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  loki:
+    image: grafana/loki:latest
+    container_name: root_loki
+    volumes:
+      - ./loki-config.yaml:/etc/loki/config.yaml  # Ensure Loki finds the config file
+    command: -config.file=/etc/loki/config.yaml  # Explicitly set config file path
+    ports:
+      - "3100:3100"
+
+  promtail:
+    image: grafana/promtail:latest
+    container_name: root_promtail
+    volumes:
+      - ./promtail-config.yaml:/etc/promtail/config.yaml  # Ensure Promtail finds the config file
+    command: -config.file=/etc/promtail/config.yaml  # Explicitly set config file path
+    depends_on:
+      - loki
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: root_grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+
+volumes:
+  grafana-storage:
