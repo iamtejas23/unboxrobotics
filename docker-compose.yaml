@@ -5,7 +5,7 @@ services:
     image: grafana/loki:latest
     container_name: root_loki
     volumes:
-      - ./loki-config.yaml:/etc/loki/config.yaml  # Ensure Loki finds the config file
+      - ./loki-config.yaml:/etc/loki/config.yaml  # Correct Loki config path
     command: -config.file=/etc/loki/config.yaml  # Explicitly set config file path
     ports:
       - "3100:3100"
@@ -14,7 +14,9 @@ services:
     image: grafana/promtail:latest
     container_name: root_promtail
     volumes:
-      - ./promtail-config.yaml:/etc/promtail/config.yaml  # Ensure Promtail finds the config file
+      - ./promtail-config.yaml:/etc/promtail/config.yaml  # Correct Promtail config path
+      - /var/log:/var/log  # Mount host logs
+      - /tmp/promtail-positions.yaml:/tmp/positions.yaml  # Ensure position file persistence
     command: -config.file=/etc/promtail/config.yaml  # Explicitly set config file path
     depends_on:
       - loki
